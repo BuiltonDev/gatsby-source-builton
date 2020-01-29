@@ -1,0 +1,27 @@
+{
+  "name": "@builton/gatsby-source-builton",
+  "version": "0.1.0",
+  "description": "Gatsby source plugin for integrating with BuiltOn",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "gatsby",
+    "gatsby-plugin",
+    "gatsby-source-builton",
+    "Builton",
+    "AI",
+    "SAAS",
+    "On-demand"
+  ],
+  "author": "Builton <hello@builton.dev> (https://builton.dev/)",
+  "license": "MIT",
+  "dependencies": {
+    "@builton/node-sdk": "^1.0.2",
+    "gatsby-source-filesystem": "^2.1.46"
+  },
+  "peerDependencies": {
+    "gatsby": "^2.0.0"
+  }
+}
