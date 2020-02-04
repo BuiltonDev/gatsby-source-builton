@@ -75,6 +75,7 @@ exports.onCreateNode = async ({
   store,
   cache,
   createNodeId,
+  reporter,
 }) => {
   const { createNode } = actions;
 
@@ -89,7 +90,8 @@ exports.onCreateNode = async ({
       });
       node.image___NODE = image.id;
     } catch (e) {
-      console.error(`gatsby-source-builton: Error fetching image`, e);
+      reporter.panicOnBuild(e);
+      return;
     }
   }
 
@@ -106,7 +108,8 @@ exports.onCreateNode = async ({
         });
         mediaPromises.push(promise);
       } catch (e) {
-        console.error('gatsby-source-builton: Error fetching media', e);
+        reporter.panicOnBuild(e);
+        return;
       }
     });
     const mediaNodes = await Promise.all(mediaPromises);
