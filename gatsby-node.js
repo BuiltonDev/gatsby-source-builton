@@ -35,10 +35,12 @@ exports.sourceNodes = async (
       product._sub_products.forEach(subProduct => {
         subProduct.id = subProduct._id.$oid;
         subProduct.parents___NODE = subProduct.parents.map(p => p.id = p.$oid);
+        delete subProduct.parents;
         createProductNode(createContentDigest, createNode)(subProduct);
         product._sub_products___NODE.push(subProduct.id);
       });
     }
+    delete product._sub_products;
     createProductNode(createContentDigest, createNode)(product);
   }
 
@@ -68,7 +70,6 @@ exports.sourceNodes = async (
 }
 
 
-
 exports.onCreateNode = async ({
   node,
   actions,
@@ -89,6 +90,7 @@ exports.onCreateNode = async ({
         createNodeId
       });
       node.image___NODE = image.id;
+      delete node.image;
     } catch (e) {
       reporter.panicOnBuild(e);
       return;
@@ -114,5 +116,6 @@ exports.onCreateNode = async ({
     });
     const mediaNodes = await Promise.all(mediaPromises);
     node.media___NODE = Array.from(mediaNodes, m => m.id);
+    delete node.media;
   }
 }
