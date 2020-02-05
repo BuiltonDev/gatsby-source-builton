@@ -119,3 +119,47 @@ exports.onCreateNode = async ({
     delete node.media;
   }
 }
+
+exports.createSchemaCustomization = ({ actions: { createTypes } }) => {
+  createTypes(`
+    type BuiltOnProduct implements Node {
+      _sub_products: [BuiltOnProduct]
+      image: File
+      media: [File]
+    }
+  `)
+}
+
+// This allows having a fallback value when the field doesn't exist.
+const customResolveFallback = (fallbackValue) => (source, args, context, info) => {
+  const key = info.path.key;
+  if (!source[key]) {
+    return info.originalResolver(
+      {
+        ...source,
+        [key]: fallbackValue
+      },
+      args,
+      context,
+      info
+    )
+  } else {
+    return info.originalResolver(source, args, context, info)
+  }
+};
+
+exports.createResolvers = ({ createResolvers }) => {
+  createResolvers({
+    BuiltOnProduct: {
+      _sub_products: {
+        resolve: customResolveFallback([]),
+      },
+      media: {
+        resolve: customResolveFallback([]),
+      },
+      image: {
+        resolve: customResolveFallback(null),
+      },
+    },
+  })
+}
