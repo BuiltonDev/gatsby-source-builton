@@ -17,6 +17,27 @@ const createProductNode = (createContentDigest, createNode) => (product) => {
   createNode(node);
 }
 
+async function* getAllProducts(builton) {
+  const size = 100;
+  let productPage = await builton.products.get({
+    size,
+    urlParams: {
+      expand: '_sub_products.image,image',
+      sort: '-created',
+      type: 'main',
+    },
+  });
+  const nbPage = Math.floor(productPage.paginationTotal / size);
+  let currentPage = 0;
+  while (currentPage <= nbPage) {
+    currentPage += 1;
+    for (const product of productPage.current) {
+      yield product;
+    }
+    await productPage.next();
+  }
+}
+
 exports.sourceNodes = async (
   { actions, createContentDigest },
   { api_key, endpoint },
@@ -28,7 +49,7 @@ exports.sourceNodes = async (
   });
 
   const { createNode } = actions;
-  const productIterator = getAllProducts();
+  const productIterator = getAllProducts(builton);
   for await (const product of productIterator) {
     product._sub_products___NODE = [];
     if (product._sub_products) {
@@ -42,30 +63,6 @@ exports.sourceNodes = async (
     }
     delete product._sub_products;
     createProductNode(createContentDigest, createNode)(product);
-  }
-
-  async function* getAllProducts() {
-    const size = 100;
-    let productPage = await builton.products.get({
-      size,
-      urlParams: {
-        expand: '_sub_products.image,image',
-        sort: '-created',
-        type: 'main',
-      },
-    });
-    for (const product of productPage.current) {
-      yield product;
-    }
-    const nbPage = Math.floor(productPage.paginationTotal / size);
-    let currentPage = 0;
-    while (currentPage <= nbPage) {
-      await productPage.next();
-      currentPage += 1;
-      for (const product of productPage.current) {
-        yield product;
-      }
-    }
   }
 }
 
