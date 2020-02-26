@@ -1,6 +1,6 @@
 # gatsby-source-builton
 
-This source plugin for using your [BuiltOn](https://builton.dev)'s data in a Gatsby website.
+This is a source plugin for using your data from [BuiltOn](https://builton.dev) in a Gatsby website.
 
 ## Installation
 
